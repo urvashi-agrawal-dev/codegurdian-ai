@@ -1,0 +1,232 @@
+{
+  "name": "codeguardian-ai-extension",
+  "displayName": "CodeGuardian AI",
+  "description": "Context-Aware AI Code Review and Debugging Assistant",
+  "version": "0.1.0",
+  "engines": {
+    "vscode": "^1.80.0"
+  },
+  "categories": [
+    "Debuggers",
+    "Linters",
+    "Testing",
+    "Machine Learning"
+  ],
+  "keywords": [
+    "ai",
+    "debugging",
+    "code review",
+    "testing",
+    "assistant"
+  ],
+  "activationEvents": [
+    "onLanguage:javascript",
+    "onLanguage:typescript",
+    "onLanguage:javascriptreact",
+    "onLanguage:typescriptreact",
+    "onCommand:codeguardian.analyzeCurrentFile",
+    "onCommand:codeguardian.analyzeSelection",
+    "onCommand:codeguardian.analyzeWorkspace"
+  ],
+  "main": "./out/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "codeguardian.analyzeCurrentFile",
+        "title": "Analyze Current File",
+        "category": "CodeGuardian"
+      },
+      {
+        "command": "codeguardian.analyzeSelection",
+        "title": "Analyze Selection",
+        "category": "CodeGuardian"
+      },
+      {
+        "command": "codeguardian.explainIssue",
+        "title": "Explain Issue",
+        "category": "CodeGuardian"
+      },
+      {
+        "command": "codeguardian.fixWithAI",
+        "title": "Fix with CodeGuardian",
+        "category": "CodeGuardian"
+      },
+      {
+        "command": "codeguardian.generateTests",
+        "title": "Generate Tests",
+        "category": "CodeGuardian"
+      },
+      {
+        "command": "codeguardian.openPanel",
+        "title": "Open CodeGuardian",
+        "category": "CodeGuardian",
+        "icon": "$(shield)"
+      },
+      {
+        "command": "codeguardian.analyzeWorkspace",
+        "title": "Analyze Workspace",
+        "category": "CodeGuardian"
+      },
+      {
+        "command": "codeguardian.chatWithAI",
+        "title": "Chat with CodeGuardian",
+        "category": "CodeGuardian"
+      }
+    ],
+    "menus": {
+      "explorer/context": [
+        {
+          "command": "codeguardian.analyzeCurrentFile",
+          "when": "resourceExtname =~ /\\.(js|ts|jsx|tsx)$/",
+          "group": "codeguardian"
+        }
+      ],
+      "editor/context": [
+        {
+          "command": "codeguardian.analyzeSelection",
+          "when": "editorHasSelection && resourceExtname =~ /\\.(js|ts|jsx|tsx)$/",
+          "group": "codeguardian@1"
+        },
+        {
+          "command": "codeguardian.explainIssue",
+          "when": "resourceExtname =~ /\\.(js|ts|jsx|tsx)$/",
+          "group": "codeguardian@2"
+        },
+        {
+          "command": "codeguardian.fixWithAI",
+          "when": "resourceExtname =~ /\\.(js|ts|jsx|tsx)$/",
+          "group": "codeguardian@3"
+        },
+        {
+          "command": "codeguardian.generateTests",
+          "when": "resourceExtname =~ /\\.(js|ts|jsx|tsx)$/",
+          "group": "codeguardian@4"
+        }
+      ],
+      "commandPalette": [
+        {
+          "command": "codeguardian.analyzeSelection",
+          "when": "editorHasSelection && resourceExtname =~ /\\.(js|ts|jsx|tsx)$/"
+        }
+      ]
+    },
+    "views": {
+      "explorer": [
+        {
+          "id": "codeguardian.issuesView",
+          "name": "CodeGuardian Issues",
+          "when": "workspaceFolderCount > 0"
+        }
+      ]
+    },
+    "viewsContainers": {
+      "panel": [
+        {
+          "id": "codeguardian",
+          "title": "CodeGuardian AI",
+          "icon": "$(shield)"
+        }
+      ]
+    },
+    "configuration": {
+      "title": "CodeGuardian AI",
+      "properties": {
+        "codeguardian.ai.apiKey": {
+          "type": "string",
+          "default": "",
+          "description": "API Key for AI provider",
+          "order": 1
+        },
+        "codeguardian.ai.model": {
+          "type": "string",
+          "default": "gpt-4",
+          "description": "AI model to use",
+          "order": 2
+        },
+        "codeguardian.ai.baseUrl": {
+          "type": "string",
+          "default": "https://api.openai.com/v1",
+          "description": "Base URL for AI API",
+          "order": 3
+        },
+        "codeguardian.analysis.enableRealTimeDiagnostics": {
+          "type": "boolean",
+          "default": true,
+          "description": "Enable real-time code analysis and diagnostics",
+          "order": 4
+        },
+        "codeguardian.analysis.eslint.enabled": {
+          "type": "boolean",
+          "default": true,
+          "description": "Enable ESLint analysis",
+          "order": 4.1
+        },
+        "codeguardian.analysis.typescript.enabled": {
+          "type": "boolean",
+          "default": true,
+          "description": "Enable TypeScript compiler analysis",
+          "order": 4.2
+        },
+        "codeguardian.analysis.debounceMs": {
+          "type": "number",
+          "default": 1000,
+          "description": "Debounce delay for real-time analysis (milliseconds)",
+          "order": 4.3
+        },
+        "codeguardian.analysis.onSave": {
+          "type": "boolean",
+          "default": true,
+          "description": "Run analysis when files are saved",
+          "order": 4.4
+        },
+        "codeguardian.analysis.maxFilesAnalyzed": {
+          "type": "number",
+          "default": 100,
+          "description": "Maximum number of files to analyze in workspace analysis",
+          "order": 5
+        },
+        "codeguardian.privacy.allowRepositoryContext": {
+          "type": "boolean",
+          "default": true,
+          "description": "Allow repository context to be sent to AI",
+          "order": 6
+        },
+        "codeguardian.privacy.includeFileContents": {
+          "type": "boolean",
+          "default": true,
+          "description": "Include file contents in AI requests",
+          "order": 7
+        }
+      }
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "pretest": "npm run compile && npm run lint",
+    "lint": "eslint src --ext ts",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "package": "vsce package",
+    "build": "npm run compile"
+  },
+  "devDependencies": {
+    "@types/eslint": "^9.6.1",
+    "@types/node": "20.x",
+    "@types/vscode": "^1.80.0",
+    "@typescript-eslint/eslint-plugin": "^6.4.1",
+    "@typescript-eslint/parser": "^6.4.1",
+    "@vscode/test-electron": "^2.3.4",
+    "@vscode/vsce": "^2.19.0",
+    "eslint": "^8.47.0",
+    "typescript": "^5.1.6",
+    "vite": "^8.3.3",
+    "vitest": "^5.0.3"
+  },
+  "dependencies": {
+    "@codeguardian/shared": "file:../shared",
+    "eslint": "^8.57.1",
+    "typescript": "^5.1.6"
+  }
+}
